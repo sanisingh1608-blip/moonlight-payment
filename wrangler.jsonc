@@ -1,5 +1,5 @@
 {
   "name": "moonlight-payment-live",
-  "main": "src/index.js",
+  "main": "src/Src/index.js",
   "compatibility_date": "2026-10-03"
 }
