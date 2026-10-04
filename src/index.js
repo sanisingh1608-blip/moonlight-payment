@@ -1,39 +1,20 @@
 const ALLOWED_ORIGIN = "https://moonlightbiryani.in";
 
-const corsHeaders = {
+const CORS_HEADERS = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
   "Content-Type": "application/json"
 };
 
-function json(data, status = 200) {
+function response(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: corsHeaders
+    headers: CORS_HEADERS
   });
 }
 
-function base64FromBytes(bytes) {
-  let binary = "";
-  const chunkSize = 0x8000;
-
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode(
-      ...bytes.subarray(i, i + chunkSize)
-    );
-  }
-
-  return btoa(binary);
-}
-
-function hexFromBytes(bytes) {
-  return [...new Uint8Array(bytes)]
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-async function hmacSHA256(secret, message) {
+async function createHmacSHA256(secret, message) {
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -51,10 +32,12 @@ async function hmacSHA256(secret, message) {
     new TextEncoder().encode(message)
   );
 
-  return hexFromBytes(signature);
+  return Array.from(new Uint8Array(signature))
+    .map(byte => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-function safeEqual(a, b) {
+function safeCompare(a, b) {
   if (typeof a !== "string" || typeof b !== "string") {
     return false;
   }
@@ -63,4 +46,31 @@ function safeEqual(a, b) {
     return false;
   }
 
- 
+  let result = 0;
+
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+
+  return result === 0;
+}
+
+async function razorpayAPI(env, path, method = "GET", body = null) {
+  const credentials = btoa(
+    `${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`
+  );
+
+  const options = {
+    method,
+    headers: {
+      "Authorization": `Basic ${credentials}`,
+      "Content-Type": "application/json"
+    }
+  };
+
+  if (body !== null) {
+    options.body = JSON.stringify(body);
+  }
+
+  const res = await fetch(
+    `https://api.razorpay.com/v
