@@ -61,13 +61,12 @@ throw new Error("Razorpay credentials are not configured");
 }
 
 const credentials = btoa(
-"${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}"
-);
+`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`
 
 const options = {
 method,
 headers: {
-"Authorization": "Basic ${credentials}",
+"Authorization": `Basic ${credentials}`,
 "Content-Type": "application/json"
 }
 };
@@ -77,7 +76,7 @@ options.body = JSON.stringify(body);
 }
 
 const res = await fetch(
-"https://api.razorpay.com/v1${path}",
+`https://api.razorpay.com/v1${path}`,
 options
 );
 
