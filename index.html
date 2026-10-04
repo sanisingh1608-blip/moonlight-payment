@@ -19,7 +19,7 @@ h3{color:#54142b;margin:18px 0 5px}
 .item{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding:12px 0}
 .item-name{flex:1}
 .price{font-weight:bold;color:#54142b}
-.add{background:#54142b;color:white;border:0;border-radius:8px;padding:10px 15px;font-weight:bold}
+.add{background:#54142b;color:#fff;border:0;border-radius:8px;padding:10px 15px;font-weight:bold}
 .qty{display:flex;align-items:center;gap:8px}
 .qty button{border:0;border-radius:6px;padding:5px 10px;font-size:17px}
 input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px;font-size:15px}
@@ -34,6 +34,7 @@ input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8
 .empty{text-align:center;color:#777;padding:12px}
 .notice{background:#fff3cd;padding:12px;border-radius:9px;font-size:14px}
 .category{border-top:1px solid #eee;margin-top:12px;padding-top:8px}
+hr{border:0;border-top:1px solid #ddd;margin:12px 0}
 </style>
 </head>
 
@@ -62,28 +63,29 @@ input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8
 </div>
 
 <div class="card location">
+
 <h2>📍 Delivery Location</h2>
 
 <button class="add" onclick="getLocation()">
-📍 Use My Current Location
+📍 Calculate My Delivery Charge
 </button>
 
 <p id="locationStatus" class="small">
-Location allow karne ke baad distance automatically calculate hoga.
+Allow location access to calculate your distance from Moonlight Biryani N Snacks.
 </p>
 
 <input id="address" placeholder="Full delivery address / landmark">
 
 <div class="total">
-Distance: <span id="distance">--</span>
+📍 Distance: <span id="distance">--</span>
 </div>
 
 <div class="total">
-Delivery Charge: ₹<span id="delivery">0</span>
+🚚 Delivery Charge: ₹<span id="delivery">0</span>
 </div>
 
 <div class="total">
-Food Total: ₹<span id="foodTotal">0</span>
+🍽️ Food Total: ₹<span id="foodTotal">0</span>
 </div>
 
 <hr>
@@ -93,15 +95,13 @@ Grand Total: ₹<span id="grandTotal">0</span>
 </div>
 
 <p class="small">
-🚚 0–5 KM: ₹50 &nbsp; | &nbsp; 5.1–10 KM: ₹80
+0–5 KM: ₹50 | 5.1–10 KM: ₹80 | Above 10 KM: Contact us
 </p>
 
-<p class="small">
-10 KM से ज्यादा delivery available नहीं है.
-</p>
 </div>
 
 <div class="card">
+
 <h2>👤 Customer Details</h2>
 
 <input id="name" placeholder="Your Name">
@@ -127,14 +127,23 @@ maxlength="10"
 <p class="small">
 Online payment verify होने के बाद ही order confirmed माना जाएगा.
 </p>
+
 </div>
 
 <div class="card">
+
 <div class="notice">
+
 📞 <b>Home Delivery • Takeaway</b><br>
-Direct order ke liye WhatsApp: <b>8873420907</b><br>
-💳 UPI: <b>54142B5074@mairtel</b>
+
+Direct order ke liye WhatsApp:
+<b>8873420907</b><br>
+
+💳 UPI:
+<b>54142B5074@mairtel</b>
+
 </div>
+
 </div>
 
 </div>
@@ -142,6 +151,10 @@ Direct order ke liye WhatsApp: <b>8873420907</b><br>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+
+/* =========================
+   SETTINGS
+========================= */
 
 const WORKER_URL =
 "https://moonlight-payment-final.sanisingh1608.workers.dev";
@@ -151,10 +164,15 @@ const SHOP_LNG = 82.6967;
 
 const WHATSAPP_NUMBER = "918873420907";
 
+
+/* =========================
+   MENU
+========================= */
+
 const menuData = [
 
 {
-category:"Rice & Biryani",
+category:"🍚 Rice and Biryani",
 items:[
 ["Paneer Dum Biryani",130],
 ["Veg Dum Biryani",120],
@@ -171,7 +189,7 @@ items:[
 },
 
 {
-category:"Starters",
+category:"🍗 Starters",
 items:[
 ["Paneer Chilli",150],
 ["Paneer 65",150],
@@ -190,7 +208,7 @@ items:[
 },
 
 {
-category:"Main Course",
+category:"🍛 Main Course",
 items:[
 ["Paneer Do Pyaaza",190],
 ["Paneer Masala",190],
@@ -221,7 +239,7 @@ items:[
 },
 
 {
-category:"Breads",
+category:"🫓 Breads",
 items:[
 ["Plain Tandoori Roti",15],
 ["Butter Tandoori Roti",20],
@@ -229,32 +247,46 @@ items:[
 ["Butter Naan",50],
 ["Aloo Paratha",49],
 ["Paneer Paratha",59],
-["Tawa Roti",15]
+["Tawa Roti",15],
+["Butter Tawa Roti",20]
 ]
 }
 
 ];
 
-let cart=[];
-let deliveryCharge=0;
-let distanceKm=0;
-let customerLat=null;
-let customerLng=null;
+
+/* =========================
+   VARIABLES
+========================= */
+
+let cart = [];
+
+let deliveryCharge = 0;
+
+let distanceKm = 0;
+
+let customerLat = null;
+
+let customerLng = null;
 
 
-/* MENU */
+/* =========================
+   MENU DISPLAY
+========================= */
 
 function renderMenu(){
 
-const menu=document.getElementById("menu");
+const menu =
+document.getElementById("menu");
 
-menu.innerHTML=menuData.map(section=>`
+menu.innerHTML =
+menuData.map(section => `
 
 <div class="category">
 
 <h3>${section.category}</h3>
 
-${section.items.map(item=>`
+${section.items.map(item => `
 
 <div class="item">
 
@@ -285,11 +317,14 @@ ADD
 }
 
 
-/* CART */
+/* =========================
+   ADD ITEM
+========================= */
 
 function addItem(name,price){
 
-const existing=cart.find(x=>x.name===name);
+const existing =
+cart.find(item => item.name === name);
 
 if(existing){
 
@@ -310,11 +345,15 @@ renderCart();
 }
 
 
+/* =========================
+   CHANGE QTY
+========================= */
+
 function changeQty(index,change){
 
-cart[index].qty+=change;
+cart[index].qty += change;
 
-if(cart[index].qty<=0){
+if(cart[index].qty <= 0){
 
 cart.splice(index,1);
 
@@ -325,29 +364,45 @@ renderCart();
 }
 
 
+/* =========================
+   FOOD TOTAL
+========================= */
+
 function getFoodTotal(){
 
 return cart.reduce(
-(sum,item)=>sum+(item.price*item.qty),0
+
+(sum,item) =>
+sum + (item.price * item.qty),
+
+0
+
 );
 
 }
 
 
+/* =========================
+   CART
+========================= */
+
 function renderCart(){
 
-const box=document.getElementById("cart");
+const box =
+document.getElementById("cart");
 
 if(!cart.length){
 
-box.innerHTML="Cart empty";
-box.className="empty";
+box.innerHTML = "Cart empty";
+
+box.className = "empty";
 
 }else{
 
-box.className="";
+box.className = "";
 
-box.innerHTML=cart.map((item,index)=>`
+box.innerHTML = cart.map(
+(item,index) => `
 
 <div class="item">
 
@@ -357,7 +412,7 @@ box.innerHTML=cart.map((item,index)=>`
 
 ₹${item.price} × ${item.qty}
 =
-<b>₹${item.price*item.qty}</b>
+<b>₹${item.price * item.qty}</b>
 
 </div>
 
@@ -377,7 +432,8 @@ box.innerHTML=cart.map((item,index)=>`
 
 </div>
 
-`).join("");
+`
+).join("");
 
 }
 
@@ -386,123 +442,175 @@ updateTotals();
 }
 
 
+/* =========================
+   TOTAL CALCULATION
+========================= */
+
 function updateTotals(){
 
-const food=getFoodTotal();
+const foodTotal =
+getFoodTotal();
 
-document.getElementById("foodTotal").textContent=food;
+const finalDelivery =
+Number(deliveryCharge) || 0;
 
-document.getElementById("delivery").textContent=
-deliveryCharge;
+const grandTotal =
+foodTotal + finalDelivery;
 
-document.getElementById("grandTotal").textContent=
-food+deliveryCharge;
+document.getElementById("foodTotal")
+.textContent =
+foodTotal.toFixed(0);
+
+document.getElementById("delivery")
+.textContent =
+finalDelivery.toFixed(0);
+
+document.getElementById("grandTotal")
+.textContent =
+grandTotal.toFixed(0);
 
 }
 
 
-/* LOCATION */
+/* =========================
+   LOCATION
+========================= */
 
 function getLocation(){
 
 if(!navigator.geolocation){
 
-alert("Browser location support nahi karta.");
+alert(
+"Browser location support nahi karta."
+);
 
 return;
 
 }
 
-document.getElementById("locationStatus").textContent=
+document.getElementById(
+"locationStatus"
+).textContent =
 "📍 Location mil rahi hai...";
+
 
 navigator.geolocation.getCurrentPosition(
 
-position=>{
+function(position){
 
-customerLat=
+customerLat =
 position.coords.latitude;
 
-customerLng=
+customerLng =
 position.coords.longitude;
 
 calculateDistance();
 
 },
 
-()=>{
+function(){
 
-document.getElementById("locationStatus").textContent=
+document.getElementById(
+"locationStatus"
+).textContent =
 "❌ Location permission allow karein.";
 
-alert("Location permission allow karein.");
+alert(
+"Location permission allow karein."
+);
 
 },
 
 {
-
 enableHighAccuracy:true,
 timeout:15000,
 maximumAge:0
-
 }
 
 );
 
 }
 
+
+/* =========================
+   DISTANCE + DELIVERY
+========================= */
 
 function calculateDistance(){
 
-const R=6371;
+const R = 6371;
 
-const dLat=
-(customerLat-SHOP_LAT)*Math.PI/180;
+const dLat =
+(customerLat - SHOP_LAT)
+* Math.PI / 180;
 
-const dLng=
-(customerLng-SHOP_LNG)*Math.PI/180;
+const dLng =
+(customerLng - SHOP_LNG)
+* Math.PI / 180;
 
-const a=
-Math.sin(dLat/2)**2+
-Math.cos(SHOP_LAT*Math.PI/180)*
-Math.cos(customerLat*Math.PI/180)*
-Math.sin(dLng/2)**2;
+const a =
+Math.sin(dLat / 2) ** 2 +
 
-const distance=
-R*2*Math.atan2(
+Math.cos(
+SHOP_LAT * Math.PI / 180
+) *
+
+Math.cos(
+customerLat * Math.PI / 180
+) *
+
+Math.sin(dLng / 2) ** 2;
+
+const distance =
+R * 2 *
+
+Math.atan2(
 Math.sqrt(a),
-Math.sqrt(1-a)
+Math.sqrt(1 - a)
 );
 
-distanceKm=distance;
-
-document.getElementById("distance").textContent=
-distance.toFixed(2)+" KM";
+distanceKm = distance;
 
 
-if(distance<=5){
+/* DISPLAY DISTANCE */
 
-deliveryCharge=50;
+document.getElementById(
+"distance"
+).textContent =
+distance.toFixed(2) + " KM";
 
-document.getElementById("locationStatus").textContent=
+
+/* DELIVERY CHARGE */
+
+if(distance <= 5){
+
+deliveryCharge = 50;
+
+document.getElementById(
+"locationStatus"
+).textContent =
 "✅ Delivery available — ₹50";
 
 }
 
-else if(distance<=10){
+else if(distance <= 10){
 
-deliveryCharge=80;
+deliveryCharge = 80;
 
-document.getElementById("locationStatus").textContent=
+document.getElementById(
+"locationStatus"
+).textContent =
 "✅ Delivery available — ₹80";
 
 }
 
 else{
 
-deliveryCharge=0;
+deliveryCharge = 0;
 
-document.getElementById("locationStatus").textContent=
+document.getElementById(
+"locationStatus"
+).textContent =
 "❌ Delivery 10 KM tak available hai.";
 
 alert(
@@ -511,36 +619,53 @@ alert(
 
 }
 
+
+/* IMPORTANT:
+   DELIVERY CHARGE IS NOW
+   ADDED TO GRAND TOTAL */
+
 updateTotals();
 
 }
 
 
-/* VALIDATION */
+/* =========================
+   VALIDATION
+========================= */
 
 function validateOrder(){
 
 if(!cart.length){
 
-alert("Please select food items.");
+alert(
+"Please select food items."
+);
 
 return false;
 
 }
 
-const name=
-document.getElementById("name").value.trim();
+const name =
+document.getElementById(
+"name"
+).value.trim();
 
-const phone=
-document.getElementById("phone").value.trim();
+const phone =
+document.getElementById(
+"phone"
+).value.trim();
 
-const address=
-document.getElementById("address").value.trim();
+const address =
+document.getElementById(
+"address"
+).value.trim();
 
 
 if(!name){
 
-alert("Name fill karein.");
+alert(
+"Name fill karein."
+);
 
 return false;
 
@@ -549,7 +674,9 @@ return false;
 
 if(!/^[0-9]{10}$/.test(phone)){
 
-alert("10 digit mobile number enter karein.");
+alert(
+"10 digit mobile number enter karein."
+);
 
 return false;
 
@@ -558,17 +685,8 @@ return false;
 
 if(!address){
 
-alert("Delivery address fill karein.");
-
-return false;
-
-}
-
-
-if(customerLat===null){
-
 alert(
-"Pehle 'Use My Current Location' dabayein."
+"Delivery address fill karein."
 );
 
 return false;
@@ -576,7 +694,18 @@ return false;
 }
 
 
-if(distanceKm>10){
+if(customerLat === null){
+
+alert(
+"Pehle Calculate My Delivery Charge dabayein."
+);
+
+return false;
+
+}
+
+
+if(distanceKm > 10){
 
 alert(
 "Delivery 10 KM tak available hai."
@@ -592,54 +721,69 @@ return true;
 }
 
 
-/* RAZORPAY */
+/* =========================
+   RAZORPAY PAYMENT
+========================= */
 
 async function payNow(){
 
 if(!validateOrder()) return;
 
 
-const name=
-document.getElementById("name").value.trim();
+const name =
+document.getElementById(
+"name"
+).value.trim();
 
-const phone=
-document.getElementById("phone").value.trim();
+const phone =
+document.getElementById(
+"phone"
+).value.trim();
 
-const address=
-document.getElementById("address").value.trim();
+const address =
+document.getElementById(
+"address"
+).value.trim();
 
-const total=
-getFoodTotal()+deliveryCharge;
+
+const total =
+getFoodTotal() +
+(Number(deliveryCharge) || 0);
 
 
 try{
 
-const status=
-document.getElementById("paymentStatus");
+const status =
+document.getElementById(
+"paymentStatus"
+);
 
-status.style.display="block";
+status.style.display =
+"block";
 
-status.textContent=
+status.textContent =
 "Payment prepare ho raha hai...";
 
 
-const orderResponse=
+const orderResponse =
 await fetch(
 
-WORKER_URL+"/api/create-order",
+WORKER_URL +
+"/api/create-order",
 
 {
 
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":
+"application/json"
 },
 
 body:JSON.stringify({
 
 amount:
-Math.round(total*100)
+Math.round(total * 100)
 
 })
 
@@ -648,21 +792,21 @@ Math.round(total*100)
 );
 
 
-const order=
+const order =
 await orderResponse.json();
 
 
 if(!order.success){
 
 throw new Error(
-order.error||
+order.error ||
 "Order creation failed"
 );
 
 }
 
 
-const options={
+const options = {
 
 key:order.keyId,
 
@@ -696,7 +840,16 @@ customer_phone:phone,
 delivery_address:address,
 
 distance_km:
-distanceKm.toFixed(2)
+distanceKm.toFixed(2),
+
+delivery_charge:
+String(deliveryCharge),
+
+food_total:
+String(getFoodTotal()),
+
+grand_total:
+String(total)
 
 },
 
@@ -706,20 +859,19 @@ color:"#54142b"
 
 },
 
-
 handler:
 async function(payment){
 
-status.textContent=
+status.textContent =
 "Payment verify ho raha hai...";
 
 
 try{
 
-const verifyResponse=
+const verifyResponse =
 await fetch(
 
-WORKER_URL+
+WORKER_URL +
 "/api/verify-payment",
 
 {
@@ -749,19 +901,19 @@ payment.razorpay_signature
 );
 
 
-const verified=
+const verified =
 await verifyResponse.json();
 
 
 if(
 
-verified.success&&
-verified.verified&&
+verified.success &&
+verified.verified &&
 verified.orderConfirmed
 
 ){
 
-status.textContent=
+status.textContent =
 "✅ Payment successful & verified. Order Confirmed!";
 
 
@@ -779,7 +931,7 @@ verified.orderId
 
 else{
 
-status.textContent=
+status.textContent =
 "❌ Payment verification failed. Order confirm nahi hua.";
 
 }
@@ -788,19 +940,18 @@ status.textContent=
 
 catch(error){
 
-status.textContent=
+status.textContent =
 "❌ Verification error. Order confirm nahi hua.";
 
 }
 
 },
 
-
 modal:{
 
 ondismiss:function(){
 
-status.textContent=
+status.textContent =
 "Payment cancelled. Order confirm nahi hua.";
 
 }
@@ -810,7 +961,7 @@ status.textContent=
 };
 
 
-const rzp=
+const rzp =
 new Razorpay(options);
 
 rzp.open();
@@ -821,7 +972,8 @@ catch(error){
 
 document.getElementById(
 "paymentStatus"
-).style.display="none";
+).style.display =
+"none";
 
 alert(
 "Payment start nahi ho paya. Please try again."
@@ -832,46 +984,66 @@ alert(
 }
 
 
-/* WHATSAPP */
+/* =========================
+   ORDER TEXT
+========================= */
 
 function orderText(){
 
-return cart.map(item=>
+return cart.map(item =>
 
-`${item.name} x ${item.qty} = ₹${item.price*item.qty}`
+`${item.name} x ${item.qty} = ₹${item.price * item.qty}`
 
 ).join("\n");
 
 }
 
 
+/* =========================
+   WHATSAPP ORDER
+========================= */
+
 function whatsappOrder(){
 
 if(!cart.length){
 
-alert("Please select food items.");
+alert(
+"Please select food items."
+);
 
 return;
 
 }
 
-const name=
-document.getElementById("name").value.trim()
-||"Not provided";
 
-const phone=
-document.getElementById("phone").value.trim()
-||"Not provided";
+const name =
+document.getElementById(
+"name"
+).value.trim()
+|| "Not provided";
 
-const address=
-document.getElementById("address").value.trim()
-||"Not provided";
+const phone =
+document.getElementById(
+"phone"
+).value.trim()
+|| "Not provided";
 
-const total=
-getFoodTotal()+deliveryCharge;
+const address =
+document.getElementById(
+"address"
+).value.trim()
+|| "Not provided";
 
 
-const message=
+const foodTotal =
+getFoodTotal();
+
+const total =
+foodTotal +
+(Number(deliveryCharge) || 0);
+
+
+const message =
 
 `🌙 MOONLIGHT BIRYANI N SNACKS
 
@@ -883,12 +1055,12 @@ Mobile: ${phone}
 ORDER:
 ${orderText()}
 
-Food Total: ₹${getFoodTotal()}
+Food Total: ₹${foodTotal}
 Delivery: ₹${deliveryCharge}
 Distance: ${
 distanceKm
 ?
-distanceKm.toFixed(2)+" KM"
+distanceKm.toFixed(2) + " KM"
 :
 "Not calculated"
 }
@@ -899,30 +1071,38 @@ Address:
 ${address}`;
 
 
-window.location.href=
-"https://wa.me/"+
-WHATSAPP_NUMBER+
-"?text="+
+window.location.href =
+"https://wa.me/" +
+WHATSAPP_NUMBER +
+"?text=" +
 encodeURIComponent(message);
 
 }
 
 
-/* CONFIRMED PAID ORDER */
+/* =========================
+   PAID ORDER WHATSAPP
+========================= */
 
 function sendConfirmedWhatsApp(
+
 name,
 phone,
 address,
 paymentId,
 orderId
+
 ){
 
-const total=
-getFoodTotal()+deliveryCharge;
+const foodTotal =
+getFoodTotal();
+
+const total =
+foodTotal +
+(Number(deliveryCharge) || 0);
 
 
-const message=
+const message =
 
 `✅ PAID ORDER
 
@@ -934,7 +1114,7 @@ Mobile: ${phone}
 ORDER:
 ${orderText()}
 
-Food Total: ₹${getFoodTotal()}
+Food Total: ₹${foodTotal}
 Delivery: ₹${deliveryCharge}
 Distance: ${distanceKm.toFixed(2)} KM
 
@@ -950,12 +1130,12 @@ Address:
 ${address}`;
 
 
-setTimeout(()=>{
+setTimeout(function(){
 
-window.location.href=
-"https://wa.me/"+
-WHATSAPP_NUMBER+
-"?text="+
+window.location.href =
+"https://wa.me/" +
+WHATSAPP_NUMBER +
+"?text=" +
 encodeURIComponent(message);
 
 },700);
@@ -963,10 +1143,15 @@ encodeURIComponent(message);
 }
 
 
-/* START */
+/* =========================
+   START
+========================= */
 
 renderMenu();
+
 renderCart();
+
+updateTotals();
 
 </script>
 
