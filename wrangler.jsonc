@@ -1,5 +1,8 @@
 {
   "name": "moonlight-payment-final",
   "main": "src/index.js",
-  "compatibility_date": "2026-10-03"
+  "compatibility_date": "2026-10-03",
+  "assets": {
+    "directory": "."
+  }
 }
