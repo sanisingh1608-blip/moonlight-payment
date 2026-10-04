@@ -504,4 +504,99 @@ alert(
 function orderText(){
 
 return cart.map(item=>
-`${item.name} x ${item.qty} =
+`${item.name} x ${item.qty} = ₹${item.price*item.qty}`
+).join("\n");
+}
+
+function whatsappOrder(){
+
+if(!cart.length){
+alert("Please select food items.");
+return;
+}
+
+const name=
+document.getElementById("name").value.trim();
+
+const phone=
+document.getElementById("phone").value.trim();
+
+const address=
+document.getElementById("address").value.trim();
+
+const total=
+getFoodTotal()+deliveryCharge;
+
+const message=
+`🌙 MOONLIGHT BIRYANI N SNACKS
+
+Customer: ${name}
+Mobile: ${phone}
+
+ORDER:
+${orderText()}
+
+Food Total: ₹${getFoodTotal()}
+Delivery: ₹${deliveryCharge}
+Distance: ${distanceKm.toFixed(2)} KM
+
+GRAND TOTAL: ₹${total}
+
+Address:
+${address}`;
+
+window.open(
+"https://wa.me/918873420907?text="+
+encodeURIComponent(message),
+"_blank"
+);
+}
+
+function sendConfirmedWhatsApp(
+name,
+phone,
+address,
+paymentId,
+orderId
+){
+
+const total=
+getFoodTotal()+deliveryCharge;
+
+const message=
+`✅ PAID ORDER
+🌙 MOONLIGHT BIRYANI N SNACKS
+
+Customer: ${name}
+Mobile: ${phone}
+
+ORDER:
+${orderText()}
+
+Food Total: ₹${getFoodTotal()}
+Delivery: ₹${deliveryCharge}
+Distance: ${distanceKm.toFixed(2)} KM
+
+TOTAL PAID: ₹${total}
+
+Payment ID:
+${paymentId}
+
+Razorpay Order ID:
+${orderId}
+
+Address:
+${address}`;
+
+window.open(
+"https://wa.me/918873420907?text="+
+encodeURIComponent(message),
+"_blank"
+);
+}
+
+renderCart();
+</script>
+
+</body>
+</html>
