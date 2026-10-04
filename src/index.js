@@ -61,8 +61,8 @@ throw new Error("Razorpay credentials are not configured");
 }
 
 const credentials = btoa(
-`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`
-
+  `${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`
+);
 const options = {
 method,
 headers: {
