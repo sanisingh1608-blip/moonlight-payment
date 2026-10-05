@@ -1,384 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moonlight Biryani N Snacks - Order Online</title>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <style>
-#ml-banner{background:#111;color:#ffd54a;text-align:center;padding:12px;font-size:17px;font-weight:800;position:relative;z-index:9999}
-#ml-cart{position:fixed;right:15px;bottom:15px;z-index:99999;background:#111;color:#fff;padding:12px 16px;border-radius:30px;box-shadow:0 4px 20px #0008;font-weight:800;cursor:pointer}
-#ml-cart b{color:#ffd54a}
-#ml-modal{display:none;position:fixed;inset:0;background:#0009;z-index:100000;padding:15px;overflow:auto}
-#ml-box{background:#fff;max-width:600px;margin:20px auto;padding:20px;border-radius:15px;color:#222}
-#ml-box input,#ml-box textarea,#ml-box select{width:100%;padding:11px;margin:6px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
-.ml-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #ddd}
-.ml-qty button{padding:3px 9px;margin:0 3px}
-#ml-pay{width:100%;padding:14px;background:#138a36;color:#fff;border:0;border-radius:9px;font-size:18px;font-weight:800}
-#ml-close{float:right;background:#ddd;border:0;border-radius:50%;padding:6px 10px}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#f7f3ef;
+  color:#241817;
+  font-family:Arial,sans-serif
+}
+header{
+  background:#111;
+  color:#fff;
+  text-align:center;
+  padding:18px 12px
+}
+.logo{
+  width:78px;
+  height:78px;
+  object-fit:contain;
+  border-radius:50%;
+  background:#fff;
+  margin:auto;
+  display:block
+}
+h1{margin:8px 0 3px;font-size:25px}
+.sub{font-size:14px;color:#ffd54a}
+#ml-banner{
+  background:#111;
+  color:#ffd54a;
+  text-align:center;
+  padding:12px;
+  font-size:16px;
+  font-weight:800;
+  position:sticky;
+  top:0;
+  z-index:9999
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:12px
+}
+.section-title{
+  margin:20px 0 10px;
+  background:#241817;
+  color:#fff;
+  padding:10px 13px;
+  border-radius:10px;
+  font-size:18px
+}
+.item{
+  background:#fff;
+  border-radius:14px;
+  margin:10px 0;
+  padding:10px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  box-shadow:0 2px 8px #0001
+}
+.item img{
+  width:82px;
+  height:72px;
+  object-fit:cover;
+  border-radius:10px;
+  background:#eee
+}
+.info{flex:1}
+.name{
+  font-weight:700;
+  font-size:16px
+}
+.price{
+  font-weight:800;
+  margin-top:5px
+}
+.add{
+  border:0;
+  background:#111;
+  color:#fff;
+  border-radius:20px;
+  padding:9px 15px;
+  font-weight:700
+}
+.cart{
+  background:#fff;
+  margin-top:22px;
+  padding:15px;
+  border-radius:14px;
+  box-shadow:0 2px 10px #0001
+}
+.cart-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid #eee
+}
+.qty button{
+  width:30px;
+  height:30px;
+  border:0;
+  border-radius:50%;
+  background:#111;
+  color:#fff;
+  font-weight:bold
+}
+.qty span{
+  display:inline-block;
+  min-width:28px;
+  text-align:center
+}
+.total{
+  font-size:19px;
+  font-weight:800;
+  margin-top:12px
+}
+label{
+  display:block;
+  font-weight:700;
+  margin-top:12px
+}
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  font-size:15px
+}
+textarea{min-height:80px}
+.btn{
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:800;
+  margin-top:12px
+}
+.pay{
+  background:#111;
+  color:#fff
+}
+.whatsapp{
+  background:#25d366;
+  color:#fff
+}
+.loc{
+  background:#f0b400;
+  color:#111
+}
+.small{
+  font-size:13px;
+  color:#666;
+  margin-top:6px
+}
+#ml-cart{
+  position:fixed;
+  right:15px;
+  bottom:15px;
+  z-index:99999;
+  background:#111;
+  color:#fff;
+  padding:12px 16px;
+  border-radius:30px;
+  font-weight:800;
+  box-shadow:0 3px 15px #0004
+}
+.notice{
+  background:#fff5cc;
+  border:1px solid #e5c65c;
+  padding:11px;
+  border-radius:10px;
+  margin-top:12px;
+  font-size:14px
+}
+footer{
+  text-align:center;
+  padding:30px 10px;
+  color:#666;
+  font-size:13px
+}
 </style>
+</head>
+
+<body>
+
+<header>
+  <!-- Agar logo ka URL alag hai to yahan replace karein -->
+  <img class="logo"
+       src="https://i.imgur.com/8Qf7J4H.png"
+       alt="Moonlight Biryani N Snacks Logo"
+       onerror="this.style.display='none'">
+
+  <h1>Moonlight Biryani N Snacks</h1>
+  <div class="sub">Fresh • Tasty • Desi Flavours • Korba, Chhattisgarh</div>
+  <div style="margin-top:7px;font-size:13px">
+    Home Delivery • Takeaway
+  </div>
+</header>
 
 <div id="ml-banner">
-🛵 DIRECT ORDER KAREIN — Zomato/Swiggy Se 20–25% Tak Sasta 💰
+  🍽️ Direct Order Karein — Zomato / Swiggy Se 20–25% Tak Bachat!
 </div>
 
-<div id="ml-cart">🛒 CART <b id="ml-count">0</b> • ₹<b id="ml-float-total">0</b></div>
+<div class="container">
 
-<div id="ml-modal">
-<div id="ml-box">
-<button id="ml-close">✕</button>
-<h2>🛒 Your Order</h2>
-
-<div id="ml-items"></div>
-
-<hr>
-<p>Food Total: <b>₹<span id="ml-total">0</span></b></p>
-<p>Delivery: <b>₹<span id="ml-delivery">0</span></b></p>
-<h3>Grand Total: ₹<span id="ml-total2">0</span></h3>
-
-<label>Order Type</label>
-<select id="ml-type">
-<option value="delivery">Home Delivery</option>
-<option value="takeaway">Takeaway</option>
-</select>
-
-<input id="ml-name" placeholder="Your Name">
-<input id="ml-mobile" placeholder="Mobile Number" maxlength="10">
-<textarea id="ml-address" placeholder="Full Delivery Address"></textarea>
-
-<button id="ml-location" type="button">📍 Calculate My Delivery Charge</button>
-<p id="ml-distance"></p>
-
-<button id="ml-pay">💳 PAY NOW & CONFIRM ORDER</button>
-<p id="ml-status"></p>
+<div class="notice">
+  🚚 Delivery Charge: 0–5 KM ₹50 | 5.1–10 KM ₹80
 </div>
+
+<!-- ================= BIRYANI ================= -->
+
+<div class="section-title">🍗 Rice & Biryani</div>
+
+<div id="menu"></div>
+
+<!-- ================= CART ================= -->
+
+<div class="cart" id="cartBox">
+  <h2 style="margin-top:0">🛒 Your Cart</h2>
+
+  <div id="cartItems">
+    <div class="small">Cart empty hai. Menu se item add karein.</div>
+  </div>
+
+  <div class="total">
+    Food Total: ₹<span id="foodTotal">0</span>
+  </div>
+
+  <div class="total">
+    Delivery: ₹<span id="deliveryCharge">0</span>
+  </div>
+
+  <div class="total">
+    Grand Total: ₹<span id="grandTotal">0</span>
+  </div>
+
+  <hr>
+
+  <label>Customer Name *</label>
+  <input id="customerName" placeholder="Your name">
+
+  <label>Mobile Number *</label>
+  <input id="customerPhone" type="tel" maxlength="10"
+         placeholder="10 digit mobile number">
+
+  <label>Delivery Address *</label>
+  <textarea id="customerAddress"
+            placeholder="House / Shop / Area / Landmark"></textarea>
+
+  <button class="btn loc" onclick="calculateDelivery()">
+    📍 Calculate My Delivery Charge
+  </button>
+
+  <div id="distanceResult" class="small">
+    Delivery distance calculate nahi hua hai.
+  </div>
+
+  <button class="btn pay" onclick="payNow()">
+    💳 Pay Online & Confirm Order
+  </button>
+
+  <button class="btn whatsapp" onclick="whatsappOrder()">
+    📲 Order on WhatsApp
+  </button>
 </div>
+
+</div>
+
+<div id="ml-cart">
+  🛒 <span id="floatingCount">0</span> | ₹<span id="floatingTotal">0</span>
+</div>
+
+<footer>
+  <b>Moonlight Biryani N Snacks</b><br>
+  Ravishankar Shukla Nagar beside Bus stop,<br>
+  Korba, Chhattisgarh 495677<br><br>
+  📞 8873420907
+</footer>
 
 <script>
-(function(){
 
-const PRICE=[
-130,120,120,140,260,130,250,180,350,160,90,
-150,150,100,120,250,190,350,150,170,120,230,140,150,
-190,190,220,200,150,180,199,90,110,99,160,199,170,299,
-170,299,190,319,199,170,299,349,169,299,109,15,20,40,50,
-49,59,15,20,120,149,119,129,149,149,50,119,99,129,149,139,
-49,40,75,50,80,60,109,60,120,70,140,90,190,60,119,70,129,
-80,149,70,129,80,129,90,159,60,109,70,129,99,149,159,79,39,39,49,59
+/* =====================================================
+   MENU
+===================================================== */
+
+const menuData = [
+
+  {
+    category:"Biryani",
+    items:[
+      {
+        name:"Paneer Dum Biryani",
+        price:130,
+        image:"https://images.unsplash.com/photo-1563379091339-03246963d96c"
+      },
+      {
+        name:"Veg Dum Biryani",
+        price:120,
+        image:"https://images.unsplash.com/photo-1563379091339-03246963d96c"
+      },
+      {
+        name:"Egg Dum Biryani",
+        price:120,
+        image:"https://images.unsplash.com/photo-1563379091339-03246963d96c"
+      },
+      {
+        name:"Kolkata Dum Biryani - Half",
+        price:140,
+        image:"https://images.unsplash.com/photo-1563379091339-03246963d96c"
+      },
+      {
+        name:"Kolkata Dum Biryani - Full",
+        price:260,
+        image:"https://images.unsplash.com/photo-1563379091339-03246963d96c"
+      }
+    ]
+  },
+
+  {
+    category:"Starters",
+    items:[
+      {name:"Chicken Pakoda",price:160,image:"https://images.unsplash.com/photo-1601050690597-df0568f70950"},
+      {name:"Chicken Chilli",price:180,image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b"},
+      {name:"Paneer Chilli",price:150,image:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38"}
+    ]
+  },
+
+  {
+    category:"Noodles & Fried Rice",
+    items:[
+      {name:"Veg Noodles",price:100,image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624"},
+      {name:"Egg Noodles",price:120,image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624"},
+      {name:"Chicken Noodles",price:150,image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624"},
+      {name:"Veg Fried Rice",price:100,image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b"},
+      {name:"Egg Fried Rice",price:120,image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b"},
+      {name:"Chicken Fried Rice",price:150,image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b"}
+    ]
+  },
+
+  {
+    category:"Bihari Special",
+    items:[
+      {name:"Litti Chokha",price:100,image:"https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7"},
+      {name:"Litti Murga",price:180,image:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398"},
+      {name:"Chhole Bhature",price:100,image:"https://images.unsplash.com/photo-1626132647523-66f5bf380027"}
+    ]
+  },
+
+  {
+    category:"Snacks",
+    items:[
+      {name:"Samosa",price:15,image:"https://images.unsplash.com/photo-1601050690597-df0568f70950"},
+      {name:"Kachori",price:20,image:"https://images.unsplash.com/photo-1601050690597-df0568f70950"},
+      {name:"Veg Pakoda",price:80,image:"https://images.unsplash.com/photo-1601050690597-df0568f70950"}
+    ]
+  }
+
 ];
 
-const ML={
-cart:{},
-distance:null,
-fee:0,
-lat:22.3595,
-lng:82.7501,
-phone:"918873420907"
-};
 
-const $=id=>document.getElementById(id);
-const money=n=>"₹"+Number(n||0).toFixed(0);
+/* =====================================================
+   BUILD MENU
+===================================================== */
 
-function idFromButton(b){
- let m=(b.getAttribute("onclick")||"").match(/add\s*\(\s*(\d+)/i);
- return m?Number(m[1]):null;
+const menu=document.getElementById("menu");
+
+let productList=[];
+
+menuData.forEach(section=>{
+
+  const title=document.createElement("div");
+  title.className="section-title";
+  title.textContent=section.category;
+
+  menu.appendChild(title);
+
+  section.items.forEach(item=>{
+
+    const id=productList.length;
+
+    productList.push({
+      id,
+      name:item.name,
+      price:item.price
+    });
+
+    const div=document.createElement("div");
+    div.className="item";
+
+    div.innerHTML=`
+      <img src="${item.image}" alt="${item.name}"
+           onerror="this.style.display='none'">
+
+      <div class="info">
+        <div class="name">${item.name}</div>
+        <div class="price">₹${item.price}</div>
+      </div>
+
+      <button class="add" onclick="addItem(${id})">
+        ADD
+      </button>
+    `;
+
+    menu.appendChild(div);
+  });
+});
+
+
+/* =====================================================
+   CART
+===================================================== */
+
+let cart={};
+let deliveryCharge=0;
+let distanceKm=0;
+
+function addItem(id){
+
+  if(!cart[id]) cart[id]=0;
+
+  cart[id]++;
+
+  renderCart();
 }
 
-function cardInfo(id){
- const b=[...document.querySelectorAll(".add")].find(x=>idFromButton(x)===id);
- if(!b)return null;
- const c=b.closest(".card")||b.parentElement;
- let name=c?.querySelector(".name")?.innerText?.trim()||"Item";
- let variant=c?.querySelector(".variant")?.innerText?.trim()||"";
- return {
-   id,
-   name:name,
-   variant:variant,
-   price:PRICE[id]||0
- };
+function removeItem(id){
+
+  if(!cart[id]) return;
+
+  cart[id]--;
+
+  if(cart[id]<=0)
+    delete cart[id];
+
+  renderCart();
 }
 
-function total(){
- return Object.values(ML.cart).reduce((s,x)=>s+x.price*x.qty,0);
+function renderCart(){
+
+  const box=document.getElementById("cartItems");
+
+  box.innerHTML="";
+
+  let total=0;
+  let count=0;
+
+  Object.keys(cart).forEach(id=>{
+
+    const qty=cart[id];
+    const product=productList[id];
+
+    const amount=product.price*qty;
+
+    total+=amount;
+    count+=qty;
+
+    const row=document.createElement("div");
+    row.className="cart-row";
+
+    row.innerHTML=`
+      <div>
+        <b>${product.name}</b><br>
+        ₹${product.price} × ${qty}
+      </div>
+
+      <div class="qty">
+        <button onclick="removeItem(${id})">−</button>
+        <span>${qty}</span>
+        <button onclick="addItem(${id})">+</button>
+      </div>
+
+      <b>₹${amount}</b>
+    `;
+
+    box.appendChild(row);
+  });
+
+  if(count===0){
+
+    box.innerHTML=
+      '<div class="small">Cart empty hai. Menu se item add karein.</div>';
+
+  }
+
+  document.getElementById("foodTotal").textContent=total;
+  document.getElementById("deliveryCharge").textContent=deliveryCharge;
+  document.getElementById("grandTotal").textContent=total+deliveryCharge;
+
+  document.getElementById("floatingCount").textContent=count;
+  document.getElementById("floatingTotal").textContent=total+deliveryCharge;
 }
 
-function render(){
- let count=0,html="";
- Object.values(ML.cart).forEach(x=>{
-   count+=x.qty;
-   html+=`
-   <div class="ml-row">
-    <div>
-      <b>${x.name}</b><br>
-      <small>${x.variant}</small><br>
-      ${money(x.price)} × ${x.qty}
-    </div>
-    <div class="ml-qty">
-      <button onclick="MLminus(${x.id})">−</button>
-      ${x.qty}
-      <button onclick="MLplus(${x.id})">+</button>
-    </div>
-   </div>`;
- });
- $("ml-items").innerHTML=html||"<p>Your cart is empty.</p>";
- $("ml-count").innerText=count;
- $("ml-float-total").innerText=total();
- $("ml-total").innerText=total();
- $("ml-delivery").innerText=ML.fee;
- $("ml-total2").innerText=total()+ML.fee;
+
+/* =====================================================
+   DELIVERY
+===================================================== */
+
+function calculateDelivery(){
+
+  const address=document.getElementById("customerAddress").value.trim();
+
+  if(!address){
+
+    alert("Pehle delivery address enter karein.");
+    return;
+  }
+
+  /*
+    Browser GPS permission.
+    User ko current location allow karni hogi.
+  */
+
+  if(!navigator.geolocation){
+
+    alert("Aapke browser me location support nahi hai.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position){
+
+      const lat=position.coords.latitude;
+      const lng=position.coords.longitude;
+
+      /*
+        Moonlight approximate location:
+        Korba city centre.
+        Backend me exact shop coordinates use kiye ja sakte hain.
+      */
+
+      const shopLat=22.3452;
+      const shopLng=82.6963;
+
+      distanceKm=getDistance(
+        lat,lng,
+        shopLat,shopLng
+      );
+
+      if(distanceKm<=5){
+
+        deliveryCharge=50;
+
+      }else if(distanceKm<=10){
+
+        deliveryCharge=80;
+
+      }else{
+
+        deliveryCharge=0;
+
+      }
+
+      renderCart();
+
+      if(distanceKm<=10){
+
+        document.getElementById("distanceResult").innerHTML=
+          `📍 Distance: ${distanceKm.toFixed(2)} KM<br>
+           🚚 Delivery Charge: ₹${deliveryCharge}`;
+
+      }else{
+
+        document.getElementById("distanceResult").innerHTML=
+          `📍 Distance: ${distanceKm.toFixed(2)} KM<br>
+           ❌ Delivery available only up to 10 KM`;
+
+      }
+
+    },
+
+    function(){
+
+      alert(
+        "Location permission allow karein, tab delivery charge calculate hoga."
+      );
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:10000
+    }
+  );
 }
 
-window.MLplus=id=>{
- if(ML.cart[id])ML.cart[id].qty++;
- render();
-};
 
-window.MLminus=id=>{
- if(!ML.cart[id])return;
- ML.cart[id].qty--;
- if(ML.cart[id].qty<=0)delete ML.cart[id];
- render();
-};
+function getDistance(lat1,lon1,lat2,lon2){
 
-document.addEventListener("click",function(e){
- const b=e.target.closest(".add");
- if(!b)return;
+  const R=6371;
 
- e.preventDefault();
- e.stopImmediatePropagation();
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
 
- const id=idFromButton(b);
- if(id===null)return;
+  const a=
+    Math.sin(dLat/2)*Math.sin(dLat/2)+
+    Math.cos(lat1*Math.PI/180)*
+    Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLon/2)*Math.sin(dLon/2);
 
- const item=cardInfo(id);
- if(!item)return;
+  return R*2*Math.atan2(
+    Math.sqrt(a),
+    Math.sqrt(1-a)
+  );
+}
 
- if(!ML.cart[id])ML.cart[id]={...item,qty:0};
- ML.cart[id].qty++;
 
- render();
-},true);
+/* =====================================================
+   VALIDATION
+===================================================== */
 
-$("ml-cart").onclick=()=>{
- render();
- $("ml-modal").style.display="block";
-};
+function validateOrder(){
 
-$("ml-close").onclick=()=>{
- $("ml-modal").style.display="none";
-};
+  if(Object.keys(cart).length===0){
 
-$("ml-type").onchange=()=>{
- ML.distance=null;
- ML.fee=$("ml-type").value==="takeaway"?0:0;
- $("ml-distance").innerText="";
- render();
-};
+    alert("Cart me item add karein.");
+    return false;
+  }
 
-$("ml-location").onclick=()=>{
- if($("ml-type").value==="takeaway"){
-   ML.fee=0;
-   render();
-   return;
- }
+  const name=document.getElementById("customerName").value.trim();
+  const phone=document.getElementById("customerPhone").value.trim();
+  const address=document.getElementById("customerAddress").value.trim();
 
- if(!navigator.geolocation){
-   $("ml-distance").innerText="Location not supported.";
-   return;
- }
+  if(!name){
 
- $("ml-distance").innerText="📍 Calculating distance...";
+    alert("Customer name enter karein.");
+    return false;
+  }
 
- navigator.geolocation.getCurrentPosition(pos=>{
-   const lat=pos.coords.latitude;
-   const lng=pos.coords.longitude;
+  if(!/^[6-9]\d{9}$/.test(phone)){
 
-   const R=6371;
-   const p=Math.PI/180;
-   const a=
-     0.5-Math.cos((lat-ML.lat)*p)/2+
-     Math.cos(ML.lat*p)*Math.cos(lat*p)*
-     (1-Math.cos((lng-ML.lng)*p))/2;
+    alert("Valid 10 digit mobile number enter karein.");
+    return false;
+  }
 
-   ML.distance=R*2*Math.asin(Math.sqrt(a));
+  if(!address){
 
-   if(ML.distance<=5)ML.fee=50;
-   else if(ML.distance<=10)ML.fee=80;
-   else ML.fee=999999;
+    alert("Delivery address enter karein.");
+    return false;
+  }
 
-   $("ml-distance").innerText=
-     ML.distance>10
-     ?"❌ Delivery unavailable above 10 KM"
-     :"📍 Distance: "+ML.distance.toFixed(2)+" KM | 🚚 Delivery Charge: ₹"+ML.fee;
+  if(distanceKm<=0){
 
-   render();
- },()=>{
-   $("ml-distance").innerText="❌ Please allow location permission.";
- });
-};
+    alert("Pehle 'Calculate My Delivery Charge' par click karein.");
+    return false;
+  }
 
-$("ml-pay").onclick=async()=>{
+  if(distanceKm>10){
 
- if(!Object.keys(ML.cart).length){
-   $("ml-status").innerText="❌ Cart empty.";
-   return;
- }
+    alert("10 KM se zyada distance par delivery available nahi hai.");
+    return false;
+  }
 
- const name=$("ml-name").value.trim();
- const mobile=$("ml-mobile").value.trim();
- const address=$("ml-address").value.trim();
- const type=$("ml-type").value;
+  return true;
+}
 
- if(name.length<2){
-   $("ml-status").innerText="❌ Name enter karein.";
-   return;
- }
 
- if(!/^[6-9]\d{9}$/.test(mobile)){
-   $("ml-status").innerText="❌ Valid 10-digit mobile number enter karein.";
-   return;
- }
+/* =====================================================
+   ORDER DATA
+===================================================== */
 
- if(type==="delivery"){
-   if(!address){
-     $("ml-status").innerText="❌ Delivery address enter karein.";
-     return;
-   }
-   if(ML.distance===null){
-     $("ml-status").innerText="❌ Pehle delivery distance calculate karein.";
-     return;
-   }
-   if(ML.distance>10){
-     $("ml-status").innerText="❌ 10 KM se zyada delivery available nahi hai.";
-     return;
-   }
- }
+function getOrderData(){
 
- const items=Object.values(ML.cart).map(x=>({
-   id:x.id,
-   qty:x.qty
- }));
+  const items=[];
 
- $("ml-pay").disabled=true;
- $("ml-status").innerText="⏳ Order/payment prepare ho raha hai...";
+  Object.keys(cart).forEach(id=>{
 
- try{
+    const product=productList[id];
 
-   const res=await fetch("/api/create-order",{
-     method:"POST",
-     headers:{"Content-Type":"application/json"},
-     body:JSON.stringify({
-       name,
-       mobile,
-       address,
-       orderType:type==="takeaway"?"Takeaway":"Home Delivery",
-       distance:ML.distance,
-       total:total()+ML.fee,
-       items
-     })
-   });
+    items.push({
+      name:product.name,
+      price:product.price,
+      quantity:cart[id],
+      amount:product.price*cart[id]
+    });
 
-   const data=await res.json();
+  });
 
-   if(!res.ok||!data.success){
-     throw new Error(data.error||"Order create nahi hua.");
-   }
+  const foodTotal=items.reduce(
+    (sum,item)=>sum+item.amount,0
+  );
 
-   if(!window.Razorpay){
-     await new Promise((resolve,reject)=>{
-       const s=document.createElement("script");
-       s.src="https://checkout.razorpay.com/v1/checkout.js";
-       s.onload=resolve;
-       s.onerror=reject;
-       document.head.appendChild(s);
-     });
-   }
+  return {
 
-   const rzp=new Razorpay({
-     key:data.keyId,
-     amount:data.amount,
-     currency:data.currency,
-     order_id:data.order_id,
-     name:"Moonlight Biryani N Snacks",
-     description:"Food Order",
-     prefill:{
-       name:name,
-       contact:mobile
-     },
+    customer:{
+      name:document.getElementById("customerName").value.trim(),
+      phone:document.getElementById("customerPhone").value.trim(),
+      address:document.getElementById("customerAddress").value.trim()
+    },
 
-     handler:async function(response){
+    items,
 
-       $("ml-status").innerText="⏳ Payment verify ho raha hai...";
+    foodTotal,
 
-       try{
+    deliveryCharge,
 
-         const vr=await fetch("/api/verify-payment",{
-           method:"POST",
-           headers:{"Content-Type":"application/json"},
-           body:JSON.stringify(response)
-         });
+    distanceKm:Number(distanceKm.toFixed(2)),
 
-         const vd=await vr.json();
+    grandTotal:foodTotal+deliveryCharge,
 
-         if(!vr.ok||!vd.verified||!vd.orderConfirmed){
-           throw new Error("Payment verification failed.");
-         }
+    restaurant:"Moonlight Biryani N Snacks",
 
-         const lines=Object.values(ML.cart).map(x=>
-           `${x.name}${x.variant?" "+x.variant:""} × ${x.qty} = ₹${x.price*x.qty}`
-         );
+    phone:"8873420907"
 
-         const msg=[
-           "🍽️ *NEW PAID ORDER*",
-           "",
-           "Order ID: "+data.order_id,
-           "Name: "+name,
-           "Mobile: "+mobile,
-           "Order Type: "+(type==="takeaway"?"Takeaway":"Home Delivery"),
-           ...(type==="delivery"?["Address: "+address,"Distance: "+ML.distance.toFixed(2)+" KM"]:[]),
-           "",
-           ...lines,
-           "",
-           "Food Total: ₹"+total(),
-           "Delivery: ₹"+ML.fee,
-           "Grand Total: ₹"+(total()+ML.fee),
-           "",
-           "✅ Payment Verified"
-         ].join("\n");
+  };
+}
 
-         $("ml-status").innerHTML=
-           "✅ <b>Payment Verified — Order Confirmed!</b>";
 
-         setTimeout(()=>{
-           window.open(
-             "https://wa.me/"+ML.phone+"?text="+encodeURIComponent(msg),
-             "_blank"
-           );
-         },500);
+/* =====================================================
+   RAZORPAY PAYMENT
+===================================================== */
 
-       }catch(err){
-         $("ml-status").innerText=
-           "❌ Payment hua ho sakta hai, lekin verification fail hua. Order confirmed nahi hai.";
-       }
+async function payNow(){
 
-       $("ml-pay").disabled=false;
-     },
+  if(!validateOrder()) return;
 
-     modal:{
-       ondismiss:function(){
-         $("ml-pay").disabled=false;
-         $("ml-status").innerText="Payment cancelled.";
-       }
-     }
-   });
+  const orderData=getOrderData();
 
-   rzp.on("payment.failed",function(){
-     $("ml-pay").disabled=false;
-     $("ml-status").innerText="❌ Payment failed. Order confirm nahi hua.";
-   });
+  try{
 
-   rzp.open();
+    /*
+      EXISTING BACKEND
+      ----------------
+      Backend endpoint:
+      /create-order
 
- }catch(err){
-   $("ml-pay").disabled=false;
-   $("ml-status").innerText="❌ "+err.message;
- }
-};
+      Agar aapka Worker URL alag hai,
+      is URL ko apne Worker URL se replace karein.
+    */
 
-render();
+    const response=await fetch("/create-order",{
 
-})();
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify(orderData)
+
+    });
+
+    if(!response.ok){
+
+      throw new Error("Backend order creation failed");
+
+    }
+
+    const data=await response.json();
+
+    const options={
+
+      key:data.key_id,
+
+      amount:data.amount,
+
+      currency:"INR",
+
+      name:"Moonlight Biryani N Snacks",
+
+      description:"Food Order",
+
+      order_id:data.order_id,
+
+      prefill:{
+        name:orderData.customer.name,
+        contact:orderData.customer.phone
+      },
+
+      notes:{
+        address:orderData.customer.address
+      },
+
+      theme:{
+        color:"#111111"
+      },
+
+      handler:async function(payment){
+
+        await verifyPayment(
+          payment,
+          orderData
+        );
+
+      }
+
+    };
+
+    const rzp=new Razorpay(options);
+
+    rzp.open();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Payment backend se connection nahi ho raha.\n\n" +
+      "Agar website ka backend Worker alag URL par hai, " +
+      "to /create-order endpoint ko Worker URL se connect karna hoga."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   PAYMENT VERIFY
+===================================================== */
+
+async function verifyPayment(payment,orderData){
+
+  try{
+
+    const response=await fetch(
+      "/verify-payment",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+          payment,
+
+          order:orderData
+
+        })
+      }
+    );
+
+    const result=await response.json();
+
+    if(result.success){
+
+      alert(
+        "✅ Payment successful!\n\n" +
+        "Order confirmed.\n" +
+        "Moonlight Biryani N Snacks"
+      );
+
+      sendWhatsAppConfirmed(orderData,payment);
+
+      cart={};
+      renderCart();
+
+    }else{
+
+      alert(
+        "Payment received but order verification pending. " +
+        "Please contact Moonlight: 8873420907"
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Payment verification connection failed.\n" +
+      "Please contact Moonlight: 8873420907"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   WHATSAPP
+===================================================== */
+
+function buildWhatsAppMessage(){
+
+  const order=getOrderData();
+
+  let message=
+    "🍗 *MOONLIGHT BIRYANI N SNACKS*%0A"+
+    "🛒 *NEW FOOD ORDER*%0A%0A";
+
+  message+=
+    "👤 Name: "+encodeURIComponent(order.customer.name)+"%0A"+
+    "📞 Mobile: "+encodeURIComponent(order.customer.phone)+"%0A"+
+    "📍 Address: "+encodeURIComponent(order.customer.address)+"%0A"+
+    "📏 Distance: "+order.distanceKm+" KM%0A%0A";
+
+  order.items.forEach(item=>{
+
+    message+=
+      "• "+
+      encodeURIComponent(item.name)+
+      " × "+item.quantity+
+      " = ₹"+item.amount+
+      "%0A";
+
+  });
+
+  message+=
+    "%0A🍽️ Food Total: ₹"+order.foodTotal+
+    "%0A🚚 Delivery: ₹"+order.deliveryCharge+
+    "%0A💰 *Grand Total: ₹"+order.grandTotal+"*";
+
+  return message;
+}
+
+
+function whatsappOrder(){
+
+  if(!validateOrder()) return;
+
+  const message=buildWhatsAppMessage();
+
+  window.open(
+    "https://wa.me/918873420907?text="+message,
+    "_blank"
+  );
+}
+
+
+function sendWhatsAppConfirmed(order,payment){
+
+  let message=
+    "✅ *PAID ORDER*%0A%0A"+
+    "Moonlight Biryani N Snacks%0A"+
+    "Customer: "+
+    encodeURIComponent(order.customer.name)+
+    "%0A"+
+    "Mobile: "+
+    order.customer.phone+
+    "%0A%0A";
+
+  order.items.forEach(item=>{
+
+    message+=
+      encodeURIComponent(item.name)+
+      " × "+item.quantity+
+      " = ₹"+item.amount+
+      "%0A";
+
+  });
+
+  message+=
+    "%0AFood Total: ₹"+order.foodTotal+
+    "%0ADelivery: ₹"+order.deliveryCharge+
+    "%0A*Grand Total: ₹"+order.grandTotal+
+    "*%0A%0A"+
+    "Payment ID: "+
+    payment.razorpay_payment_id;
+
+  window.open(
+    "https://wa.me/918873420907?text="+message,
+    "_blank"
+  );
+}
+
+
+/* Initial */
+renderCart();
+
 </script>
+
+</body>
+</html>
