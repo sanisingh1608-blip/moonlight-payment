@@ -206,4 +206,194 @@ export default {
           const itemSummary=
             arr
             .map(
-             
+              it =>
+              `${CATALOG[Number(it.id)].name} x${Number(it.qty)}`
+            )
+            .join(", ")
+            .slice(0,250);
+
+          const notes={
+            customer_name:name,
+            customer_mobile:mobile,
+            order_type:orderType,
+            item_summary:itemSummary
+          };
+
+          if(orderType==="Home Delivery"){
+            notes.delivery_distance=String(distance);
+          }
+
+          const rr=await razorpayFetch(
+            "/orders",
+            env,
+            {
+              method:"POST",
+              body:JSON.stringify({
+                amount,
+                currency:"INR",
+                receipt:"ML"+Date.now(),
+                notes
+              })
+            }
+          );
+
+          const rd=await rr.json();
+
+          if(!rr.ok){
+            return jsonC(
+              {
+                error:
+                rd.error?.description ||
+                "Razorpay order creation failed."
+              },
+              502
+            );
+          }
+
+          return jsonC({
+            order_id:rd.id,
+            amount:rd.amount,
+            currency:rd.currency,
+            key_id:env.RAZORPAY_KEY_ID
+          });
+        }
+
+
+        /* VERIFY RAZORPAY PAYMENT */
+        if(
+          url.pathname==="/api/verify-payment" &&
+          request.method==="POST"
+        ){
+
+          const b=await request.json();
+
+          const oid=clean(
+            b.razorpay_order_id,
+            80
+          );
+
+          const pid=clean(
+            b.razorpay_payment_id,
+            80
+          );
+
+          const sig=clean(
+            b.razorpay_signature,
+            200
+          );
+
+          if(!oid || !pid || !sig){
+            return jsonC(
+              {
+                verified:false,
+                error:
+                "Missing payment verification data."
+              },
+              400
+            );
+          }
+
+          const expected=
+            await hmacHex(
+              env.RAZORPAY_KEY_SECRET,
+              oid+"|"+pid
+            );
+
+          if(!timingSafeEqual(expected,sig)){
+            return jsonC(
+              {
+                verified:false,
+                error:"Invalid payment signature."
+              },
+              400
+            );
+          }
+
+          const [or,pr]=await Promise.all([
+            razorpayFetch(
+              "/orders/"+encodeURIComponent(oid),
+              env
+            ),
+            razorpayFetch(
+              "/payments/"+encodeURIComponent(pid),
+              env
+            )
+          ]);
+
+          const order=await or.json();
+          const payment=await pr.json();
+
+          if(!or.ok || !pr.ok){
+            return jsonC(
+              {
+                verified:false,
+                error:
+                "Unable to verify payment with Razorpay."
+              },
+              502
+            );
+          }
+
+          if(payment.order_id!==oid){
+            return jsonC(
+              {
+                verified:false,
+                error:"Payment/order mismatch."
+              },
+              400
+            );
+          }
+
+          if(
+            Number(payment.amount)!==
+            Number(order.amount) ||
+            payment.currency!==order.currency
+          ){
+            return jsonC(
+              {
+                verified:false,
+                error:"Payment amount mismatch."
+              },
+              400
+            );
+          }
+
+          if(payment.status!=="captured"){
+            return jsonC(
+              {
+                verified:false,
+                error:
+                "Payment is not captured yet."
+              },
+              409
+            );
+          }
+
+          return jsonC({
+            verified:true,
+            payment_id:pid,
+            order_id:oid,
+            status:payment.status
+          });
+        }
+
+        return jsonC(
+          {error:"Not found"},
+          404
+        );
+
+      }catch(e){
+
+        return jsonC(
+          {
+            error:
+            "Server error. Please try again."
+          },
+          500
+        );
+      }
+    }
+
+    return env.ASSETS.fetch(request);
+  }
+};
